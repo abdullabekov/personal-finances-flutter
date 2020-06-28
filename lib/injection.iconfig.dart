@@ -4,6 +4,9 @@
 // InjectableConfigGenerator
 // **************************************************************************
 
+import 'package:my_money/application/accounts/account_actor/account_actor_bloc.dart';
+import 'package:my_money/domain/accounts/i_account_repository.dart';
+import 'package:my_money/application/accounts/account_watcher/account_watcher_bloc.dart';
 import 'package:my_money/infrastructure/core/firebase_injectable_module.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -15,6 +18,10 @@ import 'package:get_it/get_it.dart';
 
 void $initGetIt(GetIt g, {String environment}) {
   final firebaseInjectableModule = _$FirebaseInjectableModule();
+  g.registerFactory<AccountActorBloc>(
+      () => AccountActorBloc(g<IAccountRepository>()));
+  g.registerFactory<AccountWatcherBloc>(
+      () => AccountWatcherBloc(g<IAccountRepository>()));
   g.registerLazySingleton<FirebaseAuth>(
       () => firebaseInjectableModule.firebaseAuth);
   g.registerLazySingleton<GoogleSignIn>(
