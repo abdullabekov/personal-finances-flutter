@@ -31,29 +31,73 @@ class AccountRepository implements IAccountRepository {
           ),
         )
         .onErrorReturnWith((e) {
-          if (e is PlatformException && e.message.contains('PERMISSION_DENIED')) {
-            return left(const AccountFailure.insufficientPermission());
-          } else {
-            return left(const AccountFailure.unexpected());
-          }
-        });
+      if (e is PlatformException && e.message.contains('PERMISSION_DENIED')) {
+        return left(const AccountFailure.insufficientPermission());
+      } else {
+        return left(const AccountFailure.unexpected());
+      }
+    });
   }
 
   @override
-  Future<Either<AccountFailure, Unit>> create(Account account) {
-    // TODO: implement create
-    throw UnimplementedError();
+  Future<Either<AccountFailure, Unit>> create(Account account) async {
+    try {
+      final userDoc = await _firestore.userDocument();
+      final accountDto = AccountDto.fromDomain(account);
+
+      await userDoc.accountCollection
+          .document(accountDto.id)
+          .setData(accountDto.toJson());
+
+      return right(unit);
+    } on PlatformException catch (e) {
+      if (e.message.contains('PERMISSION_DENIED')) {
+        return left(const AccountFailure.insufficientPermission());
+      } else {
+        return left(const AccountFailure.unexpected());
+      }
+    }
   }
 
   @override
-  Future<Either<AccountFailure, Unit>> delete(Account account) {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<Either<AccountFailure, Unit>> delete(Account account) async {
+    try {
+      final userDoc = await _firestore.userDocument();
+      final accountDto = AccountDto.fromDomain(account);
+
+      await userDoc.accountCollection
+          .document(accountDto.id)
+          .updateData(accountDto.toJson());
+
+      return right(unit);
+    } on PlatformException catch (e) {
+      if (e.message.contains('PERMISSION_DENIED')) {
+        return left(const AccountFailure.insufficientPermission());
+      } else if (e.message.contains('NOT_FOUND')) {
+        return left(const AccountFailure.unableToUpdate());
+      } else {
+        return left(const AccountFailure.unexpected());
+      }
+    }
   }
 
   @override
-  Future<Either<AccountFailure, Unit>> update(Account account) {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<Either<AccountFailure, Unit>> update(Account account) async {
+    try {
+      final userDoc = await _firestore.userDocument();
+      final accountId = account.id.getOrCrash();
+
+      await userDoc.accountCollection.document(accountId).delete();
+
+      return right(unit);
+    } on PlatformException catch (e) {
+      if (e.message.contains('PERMISSION_DENIED')) {
+        return left(const AccountFailure.insufficientPermission());
+      } else if (e.message.contains('NOT_FOUND')) {
+        return left(const AccountFailure.unableToUpdate());
+      } else {
+        return left(const AccountFailure.unexpected());
+      }
+    }
   }
 }
