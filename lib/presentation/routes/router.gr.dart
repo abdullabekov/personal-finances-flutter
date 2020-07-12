@@ -7,8 +7,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:my_money/presentation/splash/splash.dart';
-import 'package:my_money/presentation/sign_in/sign_in_page.dart';
+import 'package:personal_finances/presentation/splash/splash.dart';
+import 'package:personal_finances/presentation/sign_in/sign_in_page.dart';
 
 abstract class Routes {
   static const splashPage = '/';
