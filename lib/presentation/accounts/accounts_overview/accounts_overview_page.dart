@@ -6,6 +6,7 @@ import 'package:personal_finances/application/accounts/account_actor/account_act
 import 'package:personal_finances/application/accounts/account_watcher/account_watcher_bloc.dart';
 import 'package:personal_finances/application/auth/auth_bloc.dart';
 import 'package:personal_finances/injection.dart';
+import 'package:personal_finances/presentation/accounts/accounts_overview/widgets/accounts_overview_body_widget.dart';
 import 'package:personal_finances/presentation/routes/router.gr.dart';
 
 class AccountsOverviewPage extends StatelessWidget {
@@ -58,6 +59,7 @@ class AccountsOverviewPage extends StatelessWidget {
               },
             ),
           ),
+          body: AccountsOverviewBodyWidget(),
           floatingActionButton: FloatingActionButton(
             onPressed: () {},
             child: Icon(Icons.add),
