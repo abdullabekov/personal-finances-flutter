@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:personal_finances/application/accounts/account_watcher/account_watcher_bloc.dart';
+import 'package:personal_finances/presentation/accounts/accounts_overview/widgets/critical_failure_display_widget.dart';
+
+import '../../../../application/accounts/account_watcher/account_watcher_bloc.dart';
+import 'account_card_widget.dart';
+import 'error_account_card_widget.dart';
 
 class AccountsOverviewBodyWidget extends StatelessWidget {
   @override
@@ -16,16 +20,12 @@ class AccountsOverviewBodyWidget extends StatelessWidget {
               itemBuilder: (context, index) {
                 final account = state.accounts[index];
                 if (account.failureOption.isSome()) {
-                  return Container(
-                    color: Colors.red,
-                    width: 100,
-                    height: 100,
+                  return ErrorAccountCard(
+                    account: account,
                   );
                 } else {
-                  return Container(
-                    color: Colors.green,
-                    width: 100,
-                    height: 100,
+                  return AccountCard(
+                    account: account,
                   );
                 }
               },
@@ -33,10 +33,8 @@ class AccountsOverviewBodyWidget extends StatelessWidget {
             );
           },
           loadFailure: (state) {
-            return Container(
-              color: Colors.yellow,
-              width: 200,
-              height: 200,
+            return CriticalFailureDisplay(
+              accountFailure: state.accountFailure,
             );
           },
         );

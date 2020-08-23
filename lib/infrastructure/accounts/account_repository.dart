@@ -19,6 +19,7 @@ class AccountRepository implements IAccountRepository {
 
   @override
   Stream<Either<AccountFailure, KtList<Account>>> watchAll() async* {
+    // yield left(const AccountFailure.insufficientPermission());
     final userDoc = await _firestore.userDocument();
     yield* userDoc.accountCollection
         .orderBy('serverTimeStamp', descending: true)
